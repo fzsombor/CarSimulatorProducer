@@ -9,8 +9,9 @@ public class Main {
     public static void main(String[] args) {
         final int numIterations = getNumOrDefault(args, 0, 1);
         final int numCars = getNumOrDefault(args, 1, 1);
+        final String kafkaCluster = args[2];
 
-        CarDataProducer carDataProducer = new CarDataProducer(1);
+        CarDataProducer carDataProducer = new CarDataProducer(1, kafkaCluster);
         System.out.println("result:");
         System.out.println(carDataProducer.getModel().nextValue().getJSON());
 
