@@ -1,9 +1,5 @@
 package hu.fzsombor;
 
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import static java.lang.Math.*;
 import static org.apache.commons.lang3.RandomUtils.nextFloat;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
@@ -39,8 +35,7 @@ class CarModel {
     // Probability of running into a bump on the road in percent
     private static final float BUMP_PROBABILITY = 5F;
 
-    private @Nullable
-    CarData previousSample;
+    private CarData previousSample;
 
     /* Failure mode state */
     private boolean pressureLossTire1;
@@ -61,10 +56,10 @@ class CarModel {
     private int id;
 
     public CarModel(int id) {
-        this.id=id;
+        this.id = id;
     }
 
-    @NotNull
+
     CarData nextValue() {
         final float previousSpeed;
         final float previousThrottlePos;
