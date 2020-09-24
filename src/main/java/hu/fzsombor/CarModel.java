@@ -5,12 +5,9 @@ import static org.apache.commons.lang3.RandomUtils.nextFloat;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 
 
-/**
- * Models the physical properties and sensor values of an electric vehicle, including synthetic failure modes.
- */
 class CarModel {
 
-    // Failure Modes
+    // ailure Modes
     private static final float SHOCK_DEGRADATION_PROBABILITY = 1F;
     private static final float TIRE_PRESSURE_LOSS_PROBABILITY = 0.5F;
     private static final float VIBRATION_DRIVE_SHAFT_DEGRADATION_PROBABILITY = 1F;
@@ -18,7 +15,7 @@ class CarModel {
     private static final float BATTERY_CELL_DEGRADATION_PROBABILITY = 1F;
     private static final float OUTDATED_FIRMWARE_PROBABILITY = 4F;
 
-    // Typical upper soft speed limit of an EV (140km/h = 38.889m/s)
+    // typical upper soft speed limit of an EV (140km/h = 38.889m/s)
     private static final float MAX_SPEED = 38.889F;
 
     // Static inertia for more simplicity, also calculated linearly for more simplicity
@@ -28,7 +25,7 @@ class CarModel {
     private static final float AIR_SPEED_MULTIPLIER = 4;
     private static final float VIBRATION_AMPLITUDE_MULTIPLIER = 100F;
 
-    // Typical battery voltage is somewhere between 200-260V
+    // typical battery voltage is somewhere between 200-260V
     private static final float DISCHARGED_BATTERY_VOLTAGE = 180;
     private static final float FULLY_CHARGED_BATTERY_VOLTAGE = 260F;
 
@@ -74,14 +71,14 @@ class CarModel {
             // (we assume that the time series starts at any point in time during a trip for now)
             previousSpeed = nextFloat(0, 50);
 
-            // Much of the data depends on the throttle position,
+            // much of the data depends on the throttle position,
             // so we generate a random throttle position first
             previousThrottlePos = nextFloat(0, 1);
             intakeAirTemp = nextFloat(15, 40);
             prevBatteryPercentage = nextFloat(30F, 100F);
             batteryVoltage = DISCHARGED_BATTERY_VOLTAGE +
                     prevBatteryPercentage * (FULLY_CHARGED_BATTERY_VOLTAGE - DISCHARGED_BATTERY_VOLTAGE);
-            // We'll assume we're heading straight forward the whole time
+            // we'll assume we're heading straight forward the whole time
             prevIntakeAirSpeed = previousSpeed * AIR_SPEED_MULTIPLIER;
 
             previousCoolantTemp = nextFloat(intakeAirTemp, intakeAirTemp + 20);
@@ -97,7 +94,7 @@ class CarModel {
             previousCoolantTemp = min(max(previousSample.getCoolantTemp() + previousSpeed * 0.008F - intakeAirTemp * 0.1F, 60F), intakeAirTemp);
         }
 
-        // Update state of failure modes. Once an event happens the state is kept across iterations
+        // update state of failure modes. Once an event happens the state is kept across iterations
         this.pressureLossTire1 = pressureLossTire1 || eventHappens(TIRE_PRESSURE_LOSS_PROBABILITY);
         this.pressureLossTire2 = pressureLossTire2 || eventHappens(TIRE_PRESSURE_LOSS_PROBABILITY);
         this.pressureLossTire3 = pressureLossTire3 || eventHappens(TIRE_PRESSURE_LOSS_PROBABILITY);
@@ -112,24 +109,24 @@ class CarModel {
         this.overheatingCoolant = overheatingCoolant || eventHappens(OVERHEATING_PROBABILITY);
         this.outdatedFirmware = outdatedFirmware || eventHappens(OUTDATED_FIRMWARE_PROBABILITY);
 
-        // Simple labelling
+        // simple labelling
         failureOccurred = pressureLossTire1 || pressureLossTire2 || pressureLossTire3 || pressureLossTire4
                 || shockFailure1 || shockFailure2 || shockFailure3 || shockFailure4
                 || driveShaftDegradation || overheatingCoolant || outdatedFirmware;
 
-        // The throttle position translates almost directly to current drawn in this model (and also relates to the battery voltage)
+        // the throttle position translates almost directly to current drawn in this model (and also relates to the battery voltage)
         final float currentDraw = max(previousThrottlePos * (abs(260 - batteryVoltage) + 4), 80);
 
-        // We will assume that there is no lag between the coolant temp sensor picking up the change
+        // we will assume that there is no lag between the coolant temp sensor picking up the change
         // in temp from higher current between cells and engine
         final float coolantTemp = overheatingCoolant ?
                 COOLANT_INERTIA * previousCoolantTemp + ((1 - COOLANT_INERTIA) * (previousCoolantTemp + currentDraw * 2.5F))
                 : COOLANT_INERTIA * previousCoolantTemp + (1 - COOLANT_INERTIA) * (previousCoolantTemp + currentDraw * 0.5F);
 
-        // Instantaneous acceleration and deceleration with "recuperation" for simplicity
+        // instantaneous acceleration and deceleration with "recuperation" for simplicity
         final float speed = VEHICLE_INERTIA * previousSpeed + (1 - VEHICLE_INERTIA) * (previousThrottlePos * MAX_SPEED);
 
-        // Drive shaft rotation translates directly to the vibration amplitude
+        // drive shaft rotation translates directly to the vibration amplitude
         final float engineVibrationAmplitude = driveShaftDegradation ?
                 speed * (VIBRATION_AMPLITUDE_MULTIPLIER * 1.5F)
                 : speed * VIBRATION_AMPLITUDE_MULTIPLIER;
@@ -145,7 +142,7 @@ class CarModel {
         final float accelerometerValue3 = getShockAcceleration(shockFailure3, bumpHappens);
         final float accelerometerValue4 = getShockAcceleration(shockFailure4, bumpHappens);
 
-        // Well, this one is kind of lame
+        // well, this one is kinda lame
         final int firmwareVersion = outdatedFirmware ?
                 1000
                 : 2000;
@@ -195,12 +192,7 @@ class CarModel {
         }
     }
 
-    /**
-     * Check if a random event is going to happen based on its percentage
-     *
-     * @param percentage evenly distributed probability of the event
-     * @return {@code true} if the event happens, {@code false} otherwise
-     */
+    // check if a random event is going to happen based on its percentage
     private boolean eventHappens(final float percentage) {
         return percentage > nextFloat(0, 100);
     }

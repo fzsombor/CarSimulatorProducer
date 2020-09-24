@@ -7,15 +7,19 @@ public class Main {
 
 
     public static void main(String[] args) {
+        // getting the parameters from the CL args
         final int numIterations = getNumOrDefault(args, 0, 3000);
         final int numCars = getNumOrDefault(args, 1, 1);
         final String kafkaCluster = args[2];
 
+        // create the cars
         List<CarDataProducer> producers = new ArrayList<>();
         for (int i = 0; i < numCars; ++i) {
             CarDataProducer producer = new CarDataProducer(i, kafkaCluster);
             producers.add(producer);
         }
+
+        // majority of the work gets done here
         for (int i = 0; i < numIterations; ++i)
             for (CarDataProducer producer : producers)
                 producer.nextPayload();

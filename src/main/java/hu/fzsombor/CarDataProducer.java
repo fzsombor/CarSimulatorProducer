@@ -16,19 +16,21 @@ public class CarDataProducer {
     public CarDataProducer(int id, String kafkaCluster) {
         this.id = id;
         this.model = new CarModel(id);
-        //Assign topicName to string variable
-        // create instance for properties to access producer configs
+
+        // creating instance for properties to access producer configs
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCluster);
         props.put(ProducerConfig.ACKS_CONFIG, "0");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        // create the producer from the config
+
+        // creating the producer from the config
         producer = new KafkaProducer<>(props);
-        // get the initial state of the CarModel
+        // getting the initial state of the CarModel
         model.nextValue();
     }
 
+    // function to get the next state of the cars
     public void nextPayload() {
         final CarData value = model.nextValue();
         String payload = value.getJSON().toString();

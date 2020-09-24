@@ -4,6 +4,56 @@ import org.json.JSONObject;
 
 public class CarData {
 
+    private float coolantTemp;
+    private float intakeAirTemp;
+    private float intakeAirFlowSpeed;
+    private float batteryPercentage;
+    private float batteryVoltage;
+    private float currentDraw;
+    private float speed;
+    private float engineVibrationAmplitude;
+    private float throttlePos;
+    private float tirePressure11;
+    private float tirePressure12;
+    private float tirePressure21;
+    private float tirePressure22;
+    private float accelerometer11Value;
+    private float accelerometer12Value;
+    private float accelerometer21Value;
+    private float accelerometer22Value;
+    private int controlUnitFirmware;
+    private boolean failureOccurred;
+    private int carId;
+
+    public CarData() {
+    }
+
+    // creating the instance from a JSON string
+    public CarData(String JSON) {
+        JSONObject obj = new JSONObject(JSON);
+
+        this.carId = obj.getInt("id");
+        this.coolantTemp = obj.getFloat("coolantTemp");
+        this.intakeAirTemp = obj.getFloat("intakeAirTemp");
+        this.intakeAirFlowSpeed = obj.getFloat("intakeAirFlowSpeed");
+        this.batteryPercentage = obj.getFloat("batteryPercentage");
+        this.batteryVoltage = obj.getFloat("batteryVoltage");
+        this.currentDraw = obj.getFloat("currentDraw");
+        this.speed = obj.getFloat("speed");
+        this.engineVibrationAmplitude = obj.getFloat("engineVibrationAmplitude");
+        this.throttlePos = obj.getFloat("throttlePos");
+        this.tirePressure11 = obj.getFloat("tirePressure11");
+        this.tirePressure12 = obj.getFloat("tirePressure12");
+        this.tirePressure21 = obj.getFloat("tirePressure21");
+        this.tirePressure22 = obj.getFloat("tirePressure22");
+        this.accelerometer11Value = obj.getFloat("accelerometer11Value");
+        this.accelerometer12Value = obj.getFloat("accelerometer12Value");
+        this.accelerometer21Value = obj.getFloat("accelerometer21Value");
+        this.accelerometer22Value = obj.getFloat("accelerometer22Value");
+        this.controlUnitFirmware = obj.getInt("controlUnitFirmware");
+        this.failureOccurred = obj.getBoolean("failureOccurred");
+    }
+
     public float getCoolantTemp() {
         return coolantTemp;
     }
@@ -156,8 +206,6 @@ public class CarData {
         this.failureOccurred = failureOccurred;
     }
 
-    private int carId;
-
     public int getCarId() {
         return carId;
     }
@@ -166,26 +214,7 @@ public class CarData {
         this.carId = carId;
     }
 
-    private float coolantTemp;
-    private float intakeAirTemp;
-    private float intakeAirFlowSpeed;
-    private float batteryPercentage;
-    private float batteryVoltage;
-    private float currentDraw;
-    private float speed;
-    private float engineVibrationAmplitude;
-    private float throttlePos;
-    private float tirePressure11;
-    private float tirePressure12;
-    private float tirePressure21;
-    private float tirePressure22;
-    private float accelerometer11Value;
-    private float accelerometer12Value;
-    private float accelerometer21Value;
-    private float accelerometer22Value;
-    private int controlUnitFirmware;
-    private boolean failureOccurred;
-
+    // getting the JSON object of the instance
     public JSONObject getJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", carId);
