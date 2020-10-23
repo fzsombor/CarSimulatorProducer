@@ -1,5 +1,7 @@
 package hu.fzsombor;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         // getting the parameters from the CL args
-        final int numIterations = getNumOrDefault(args, 0, 3000);
+        final int numSeconds = getNumOrDefault(args, 0, 3600);
         final int numCars = getNumOrDefault(args, 1, 1);
         final String kafkaCluster = args[2];
 
@@ -20,9 +22,16 @@ public class Main {
         }
 
         // majority of the work gets done here
-        for (int i = 0; i < numIterations; ++i)
-            for (CarDataProducer producer : producers)
+        int elapsed = 0;
+        while (numSeconds > elapsed) {
+            for (CarDataProducer producer : producers) {
+                Instant start = Instant.now();
                 producer.nextPayload();
+                Instant end = Instant.now();
+                elapsed += (int) Duration.between(start, end).toMillis() / 1000;
+            }
+        }
+
         for (CarDataProducer producer : producers)
             producer.close();
 
